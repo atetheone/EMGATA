@@ -1,0 +1,6 @@
+@EMGATA.API_HostAddress = http://localhost:5291
+
+GET {{EMGATA.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
