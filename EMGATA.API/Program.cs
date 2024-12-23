@@ -32,7 +32,7 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 })
 	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddDefaultTokenProviders();
-	
+
 // Disable email confirmation requirement
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -69,6 +69,7 @@ builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IModelService, ModelService>();
 builder.Services.AddScoped<ICarImageService, CarImageService>();
+builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
 
 // Register Repositories
 builder.Services.AddScoped<ICarRepository, CarRepository>();
