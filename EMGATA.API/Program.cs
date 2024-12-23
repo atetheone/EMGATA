@@ -72,6 +72,19 @@ builder.Services.AddScoped<IModelRepository, ModelRepository>();
 builder.Services.AddScoped<ICarImageRepository, CarImageRepository>();
 
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowAll",
+		builder => builder
+			.AllowAnyOrigin()
+			.AllowAnyMethod()
+			.AllowAnyHeader());
+});
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
