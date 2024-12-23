@@ -1,6 +1,8 @@
 using System.Text;
 using EMGATA.API.Data;
 using EMGATA.API.Models;
+using EMGATA.API.Repositories;
+using EMGATA.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +57,19 @@ builder.Services.AddAuthentication(options =>
 	};
 
 });
+
+// Register Services
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IModelService, ModelService>();
+builder.Services.AddScoped<ICarImageService, CarImageService>();
+
+// Register Repositories
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<IModelRepository, ModelRepository>();
+builder.Services.AddScoped<ICarImageRepository, CarImageRepository>();
 
 
 var app = builder.Build();
