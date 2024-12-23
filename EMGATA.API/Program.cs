@@ -32,7 +32,12 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 })
 	.AddEntityFrameworkStores<ApplicationDbContext>()
 	.AddDefaultTokenProviders();
-
+	
+// Disable email confirmation requirement
+builder.Services.Configure<IdentityOptions>(options =>
+{
+	options.SignIn.RequireConfirmedEmail = false;
+});
 
 builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddScoped<SignInManager<User>>();
@@ -96,8 +101,75 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Create roles and admin user
+using (var scope = app.Services.CreateScope())
+{
+	var serviceProvider = scope.ServiceProvider;
+	try
+	{
+		var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+		var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+		var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+		// Create roles if they don't exist
+		string[] roles = { "Admin", "User" };
+		foreach (var role in roles)
+		{
+			if (!await roleManager.RoleExistsAsync(role))
+			{
+				logger.LogInformation($"Creating role: {role}");
+				await roleManager.CreateAsync(new IdentityRole<int>(role));
+			}
+		}
+
+		// Create admin user if it doesn't exist
+		var adminEmail = "admin@emgata.com";
+		var adminPassword = "Admin@123";
+
+		var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+		if (adminUser == null)
+		{
+			logger.LogInformation("Creating admin user");
+			var admin = new User
+			{
+				UserName = adminEmail, // Set username same as email for consistency
+				Email = adminEmail,
+				EmailConfirmed = true
+			};
+
+			var result = await userManager.CreateAsync(admin, adminPassword);
+
+			if (result.Succeeded)
+			{
+				logger.LogInformation("Admin user created successfully");
+				await userManager.AddToRoleAsync(admin, "Admin");
+			}
+			else
+			{
+				logger.LogError("Failed to create admin user: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+			}
+		}
+		else
+		{
+			logger.LogInformation("Admin user already exists");
+			// Ensure admin is in Admin role
+			if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+			{
+				await userManager.AddToRoleAsync(adminUser, "Admin");
+			}
+		}
+	}
+	catch (Exception ex)
+	{
+		var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+		logger.LogError(ex, "An error occurred while creating roles and admin user");
+	}
+}
 
 app.Run();
