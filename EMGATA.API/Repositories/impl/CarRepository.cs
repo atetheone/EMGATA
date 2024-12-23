@@ -1,6 +1,6 @@
 ﻿using EMGATA.API.Data;
 using EMGATA.API.Models;
-using EMGATA.API.Models.enums;
+using EMGATA.API.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace EMGATA.API.Repositories;

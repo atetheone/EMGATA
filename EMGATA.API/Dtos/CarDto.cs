@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EMGATA.API.Models.enums;
+using EMGATA.API.Models.Enums;
 
 namespace EMGATA.API.Dtos;
 

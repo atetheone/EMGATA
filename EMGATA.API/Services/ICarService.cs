@@ -1,6 +1,6 @@
 ﻿using EMGATA.API.Dtos;
 using EMGATA.API.Models;
-using EMGATA.API.Models.enums;
+using EMGATA.API.Models.Enums;
 
 namespace EMGATA.API.Services
 {
