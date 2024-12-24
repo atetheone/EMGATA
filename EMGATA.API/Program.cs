@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
 	c.SwaggerDoc("v1", new OpenApiInfo { Title = "EMGATA API", Version = "v1" });
-    
+
 	// Add JWT Authentication configuration
 	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
@@ -79,6 +79,7 @@ builder.Services.AddAuthentication(options =>
 {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
 	options.TokenValidationParameters = new TokenValidationParameters
@@ -90,9 +91,9 @@ builder.Services.AddAuthentication(options =>
 		ValidIssuer = builder.Configuration["Jwt:Issuer"],
 		ValidAudience = builder.Configuration["Jwt:Audience"],
 		IssuerSigningKey = new SymmetricSecurityKey(
-					Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? ""))
+					Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ??
+							throw new InvalidOperationException("JWT Key is not configured")))
 	};
-
 });
 
 // Register Services
@@ -108,7 +109,6 @@ builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<IModelRepository, ModelRepository>();
 builder.Services.AddScoped<ICarImageRepository, CarImageRepository>();
-
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -133,6 +133,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
