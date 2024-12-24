@@ -61,7 +61,7 @@ public class AuthController : ControllerBase
 
         // Generate token
         var roles = await _userManager.GetRolesAsync(user);
-        var token = await _tokenService.GenerateToken(user, roles);
+        var token = _tokenService.GenerateToken(user, roles);
 
         return Ok(new AuthResponseDto
         {
@@ -95,13 +95,14 @@ public class AuthController : ControllerBase
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-        var token = await _tokenService.GenerateToken(user, roles);
+        var token = _tokenService.GenerateToken(user, roles);
 
         return Ok(new AuthResponseDto
         {
             IsSuccess = true,
             Message = "Login successful",
-            Token = token
+            Token = token,
+            Expiration = DateTime.UtcNow.AddHours(24)
         });
     }
 
