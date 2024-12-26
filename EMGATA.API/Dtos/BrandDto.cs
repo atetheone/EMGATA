@@ -7,6 +7,13 @@ public class BrandDto
 	public int Id { get; set; }
 	public string Name { get; set; }
 	public string Description { get; set; }
+}
+
+public class BrandWithModelsDto
+{
+	public int Id { get; set; }
+	public string Name { get; set; }
+	public string Description { get; set; }
 	public ICollection<ModelDto> Models { get; set; }
 }
 
