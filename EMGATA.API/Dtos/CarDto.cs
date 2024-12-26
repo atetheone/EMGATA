@@ -6,9 +6,7 @@ namespace EMGATA.API.Dtos;
 public class CarDto
 {
     public int Id { get; set; }
-    public int ModelId { get; set; }
-    public string ModelName { get; set; }
-    public string BrandName { get; set; }
+    public ModelDto Model { get; set; }
     public CarStatus Status { get; set; }
     public int Year { get; set; }
     public string Color { get; set; }
