@@ -9,6 +9,14 @@ public class CarRepository : GenericRepository<Car>, ICarRepository
 {
 	public CarRepository(ApplicationDbContext context) : base(context) { }
 
+	public override async Task<IEnumerable<Car>> GetAllAsync()
+	{
+		return await _context.Cars
+			.Include(c => c.Model)
+				.ThenInclude(m => m.Brand)
+			.Include(c => c.Images)
+			.ToListAsync();
+	}
 	public async Task<IEnumerable<Car>> GetAvailableCarsAsync()
 	{
 		return await _context.Cars
@@ -22,11 +30,11 @@ public class CarRepository : GenericRepository<Car>, ICarRepository
 	public async Task<Car> GetCarWithDetailsAsync(int carId)
 	{
 		return await _context.Cars
-			.Include(c => c.Model)
-			.ThenInclude(m => m.Brand)
-			.Include(c => c.Images)
-			.Include(c => c.User)
-			.FirstOrDefaultAsync(c => c.Id == carId);
+				.Include(c => c.Model)
+						.ThenInclude(m => m.Brand)
+				.Include(c => c.Images)
+				.Include(c => c.User)
+				.FirstOrDefaultAsync(c => c.Id == carId);
 	}
 
 	public async Task<IEnumerable<Car>> GetCarsByBrandAsync(int brandId)
@@ -48,7 +56,7 @@ public class CarRepository : GenericRepository<Car>, ICarRepository
 			.Where(c => c.ModelId == modelId)
 			.ToListAsync();
 	}
-	
+
 	public async Task<IEnumerable<Car>> GetCarsByUserAsync(int userId)
 	{
 		return await _context.Cars
