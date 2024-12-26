@@ -12,5 +12,5 @@ public class Model : BaseEntity
 
 	// Navigation properties
 	public virtual Brand Brand { get; set; }
-	public virtual ICollection<Car> Cars { get; set; }
+	public virtual ICollection<Car> Cars { get; set; } = new List<Car>();
 }
