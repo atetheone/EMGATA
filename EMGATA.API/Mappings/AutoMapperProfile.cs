@@ -8,10 +8,9 @@ public class AutoMapperProfile : Profile
 {
 	public AutoMapperProfile()
 	{
-		// Car mappings
 		CreateMap<Car, CarDto>()
-			.ForMember(dest => dest.ModelName, opt => opt.MapFrom(src => src.Model.Name))
-			.ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Model.Brand.Name));
+			.ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Model));     
+
 		CreateMap<CreateCarDto, Car>();
 		CreateMap<UpdateCarDto, Car>();
 
@@ -22,7 +21,7 @@ public class AutoMapperProfile : Profile
 
 		// Model mappings
 		CreateMap<Model, ModelDto>()
-			.ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name));
+			.ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.Brand));
 		CreateMap<CreateModelDto, Model>();
 		CreateMap<UpdateModelDto, Model>();
 
