@@ -8,6 +8,13 @@ public class ModelRepository : GenericRepository<Model>, IModelRepository
 {
 	public ModelRepository(ApplicationDbContext context) : base(context) { }
 
+	public override async Task<IEnumerable<Model>> GetAllAsync()
+	{
+		return await _context.Models
+			.Include(m => m.Brand)
+			.ToListAsync();
+	}
+	
 	public async Task<IEnumerable<Model>> GetModelsByBrandAsync(int brandId)
 	{
 		return await _context.Models
