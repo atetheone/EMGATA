@@ -5,10 +5,9 @@ namespace EMGATA.API.Dtos;
 public class ModelDto
 {
 	public int Id { get; set; }
-	public int BrandId { get; set; }
+	public BrandDto Brand { get; set; } 
 	public string Name { get; set; }
 	public string Description { get; set; }
-	public string BrandName { get; set; }
 }
 
 public class CreateModelDto
