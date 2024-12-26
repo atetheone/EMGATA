@@ -12,14 +12,16 @@ namespace EMGATA.API.Controllers;
 public class BrandController : ControllerBase
 {
 	private readonly IBrandService _brandService;
+	private readonly IModelService _modelService;
 	private readonly IMapper _mapper;
 
-	public BrandController(IBrandService brandService, IMapper mapper)
+	public BrandController(IBrandService brandService, IModelService modelService, IMapper mapper)
 	{
 		_brandService = brandService;
+		_modelService = modelService;
 		_mapper = mapper;
 	}
-	
+
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<BrandDto>>> GetBrands()
 	{
@@ -37,8 +39,21 @@ public class BrandController : ControllerBase
 	[HttpGet("{id}/models")]
 	public async Task<ActionResult<BrandDto>> GetBrandWithModels(int id)
 	{
-		var brand = await _brandService.GetBrandWithModelsAsync(id);
-		return Ok(_mapper.Map<BrandDto>(brand));
+		var brand = await _brandService.GetBrandByIdAsync(id);
+		if (brand == null)
+			return NotFound();
+
+		var models = await _modelService.GetModelsByBrandAsync(id);
+
+		var response = new BrandWithModelsDto
+		{
+			Id = brand.Id,
+			Name = brand.Name,
+			Description = brand.Description ?? "",
+			Models = _mapper.Map<ICollection<ModelDto>>(models)
+		};
+
+		return Ok(response);
 	}
 
 	[Authorize(Roles = "Admin")]
