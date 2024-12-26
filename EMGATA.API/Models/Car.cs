@@ -34,5 +34,5 @@ public class Car: BaseEntity
 	// Navigation properties
 	public virtual Model Model { get; set; }
 	public virtual User User { get; set; }
-	public virtual ICollection<CarImage> Images { get; set; }
+	public virtual ICollection<CarImage> Images { get; set; } = new List<CarImage>();
 }
