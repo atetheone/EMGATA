@@ -8,10 +8,10 @@ public class BrandRepository : GenericRepository<Brand>, IBrandRepository
 {
 	public BrandRepository(ApplicationDbContext context) : base(context) { }
 
-	public async Task<Brand> GetBrandWithModelsAsync(int id)
+	public override async Task<IEnumerable<Brand>> GetAllAsync()
 	{
 		return await _context.Brands
-			.Include(b => b.Models)
-			.FirstOrDefaultAsync(b => b.Id == id);
+			.ToListAsync();
 	}
+
 }
