@@ -22,10 +22,6 @@ public class BrandService : IBrandService
 		return await _brandRepository.GetByIdAsync(id);
 	}
 
-	public async Task<Brand> GetBrandWithModelsAsync(int id)
-	{
-		return await _brandRepository.GetBrandWithModelsAsync(id);
-	}
 
 	public async Task<Brand> CreateBrandAsync(Brand brand)
 	{
