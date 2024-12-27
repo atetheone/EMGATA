@@ -1,0 +1,23 @@
+# Ignore build output directories
+bin/
+obj/
+
+# Ignore Rider project files
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+*.log
+
+# Ignore other files
+.vscode/
+*.DS_Store
+*.log
+*.vs/
