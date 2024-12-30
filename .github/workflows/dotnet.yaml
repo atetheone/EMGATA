@@ -1,0 +1,105 @@
+name: EMGATA.API Continuous Integration and Deployment
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  SOLUTION_FILE: "EMGATA.API.sln"
+  PROJECT_PATH: "."
+  AZURE_WEBAPP_NAME: "atetheone-emgata-api"
+  WORKING_DIRECTORY: "./EMGATA.API"
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch full history for proper versioning
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore NuGet Packages
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          dotnet restore ${{ env.SOLUTION_FILE }}
+
+      - name: Build Solution
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+
+      - name: Run Unit Tests
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --verbosity normal
+
+      - name: Create Publish Artifact
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          dotnet publish EMGATA.API.csproj \
+          --configuration Release \
+          --output ${{ github.workspace }}/publish \
+          --no-build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapp
+          path: ${{ github.workspace }}/publish
+          retention-days: 5
+
+  deploy-to-azure:
+    name: Deploy to Azure App Service
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webapp
+          path: ${{ github.workspace }}/publish
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ github.workspace }}/publish
+
+  run-migrations:
+    name: Apply Database Migrations
+    needs: deploy-to-azure
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install EF Core Tools
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet tool restore
+
+      - name: Apply Database Migrations
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          dotnet ef database update
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
