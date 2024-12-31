@@ -140,8 +140,15 @@ app.UseStaticFiles(new StaticFileOptions
 	RequestPath = ""
 });
 
+// Modifiez la configuration HTTPS
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+// app.UseCors("AllowAll");
+app.UseCors(app.Environment.IsProduction() ? "ProductionPolicy" : "AllowAll");
+
 
 app.UseAuthentication();
 app.UseAuthorization();
