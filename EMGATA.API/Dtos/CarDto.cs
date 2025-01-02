@@ -57,4 +57,7 @@ public class UpdateCarDto
 
     [StringLength(2000, ErrorMessage = "Description cannot be longer than 2000 characters")]
     public string Description { get; set; }
+
+
+    public CarStatus Status { get; set; }
 }

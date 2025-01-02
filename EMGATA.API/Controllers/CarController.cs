@@ -66,10 +66,23 @@ public class CarController : ControllerBase
 	[HttpPut("{id}")]
 	public async Task<IActionResult> UpdateCar(int id, UpdateCarDto updateCarDto)
 	{
-		var car = await _carService.GetCarByIdAsync(id);
-		_mapper.Map(updateCarDto, car);
-		await _carService.UpdateCarAsync(car);
-		return NoContent();
+		try
+		{
+			var car = await _carService.GetCarByIdAsync(id);
+			_mapper.Map(updateCarDto, car);
+			await _carService.UpdateCarAsync(car);
+			var updatedCar = await _carService.GetCarByIdAsync(id);
+			return Ok(_mapper.Map<CarDto>(updatedCar));
+		}
+		catch (ArgumentException ex) 
+		{
+			return BadRequest(ex.Message);
+		}
+		catch (Exception)
+		{
+			return StatusCode(500, "Error updating car");
+		}
+
 	}
 
 	[Authorize(Roles = "Admin")]
