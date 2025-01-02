@@ -67,7 +67,6 @@ public class AuthController : ControllerBase
         {
             IsSuccess = true,
             Message = "User created successfully",
-            Token = token
         });
     }
 
