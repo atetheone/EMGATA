@@ -152,7 +152,7 @@ public class ModelControllerTests
   }
 
   [TestMethod]
-  public async Task UpdateModel_WithValidData_ReturnsNoContent()
+  public async Task UpdateModel_WithValidData_ReturnsOkResult()
   {
     // Arrange
     var id = 1;
@@ -164,16 +164,23 @@ public class ModelControllerTests
     };
     var existingModel = new Model { Id = id, BrandId = 1, Name = "Camry" };
 
+    var updatedModelDto = new ModelDto { Id = id, Name = "Updated Camry" };
+
     _mockModelService.Setup(x => x.GetModelByIdAsync(id))
         .ReturnsAsync(existingModel);
     _mockMapper.Setup(x => x.Map(updateDto, existingModel))
         .Returns(existingModel);
+    _mockMapper.Setup(x => x.Map<ModelDto>(existingModel))
+        .Returns(updatedModelDto);
 
     // Act
     var result = await _controller.UpdateModel(id, updateDto);
 
     // Assert
-    Assert.IsInstanceOfType(result, typeof(NoContentResult));
+    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+    var okResult = result as OkObjectResult;
+    var returnedDto = okResult.Value as ModelDto;
+    Assert.AreEqual("Updated Camry", returnedDto.Name);
     _mockModelService.Verify(x => x.UpdateModelAsync(existingModel), Times.Once);
   }
 
