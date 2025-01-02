@@ -54,10 +54,25 @@ public class ModelController : ControllerBase
 	[HttpPut("{id}")]
 	public async Task<IActionResult> UpdateModel(int id, UpdateModelDto updateModelDto)
 	{
-		var model = await _modelService.GetModelByIdAsync(id);
-		_mapper.Map(updateModelDto, model);
-		await _modelService.UpdateModelAsync(model);
-		return NoContent();
+	    try
+    {
+			var existingModel = await _modelService.GetModelByIdAsync(id);
+			if (existingModel == null) return NotFound();
+
+			// Check if brand exists before updating
+			var model = _mapper.Map(updateModelDto, existingModel);
+			await _modelService.UpdateModelAsync(model);
+			
+			return Ok(_mapper.Map<ModelDto>(model));
+    }
+    catch (KeyNotFoundException)
+    {
+			return NotFound("Brand not found");
+    }
+    catch (Exception ex)
+    {
+			return StatusCode(500, $"Error updating model: {ex.Message}");
+    }
 	}
 
 	[Authorize(Roles = "Admin")]
