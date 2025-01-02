@@ -7,15 +7,21 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:emgata_client": "node dist/emgata_client/server/server.mjs"
+    "test:headless": "ng test --watch=false --browsers=ChromeHeadless",
+    "lint": "ng lint",
+    "serve:ssr:emgata-client": "node dist/emgata-client/server/main.js",
+    "build:ssr": "ng build && ng run emgata-client:server",
+    "prerender": "ng run emgata-client:prerender"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.0.0",
+    "@angular/cdk": "^19.1.2",
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
     "@angular/core": "^19.0.0",
     "@angular/forms": "^19.0.0",
+    "@angular/material": "^19.1.2",
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/platform-server": "^19.0.0",
