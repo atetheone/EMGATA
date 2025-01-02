@@ -21,7 +21,7 @@ public class ModelService : IModelService
 
 	public async Task<Model> GetModelByIdAsync(int id)
 	{
-		return await _modelRepository.GetByIdAsync(id);
+    return await _modelRepository.GetModelWithBrandAsync(id); 
 	}
 
 	public async Task<IEnumerable<Model>> GetModelsByBrandAsync(int brandId)
@@ -40,13 +40,17 @@ public class ModelService : IModelService
 
 	public async Task UpdateModelAsync(Model model)
 	{
-		// Validate model exists
-		await _modelRepository.GetByIdAsync(model.Id);
-        
-		// Validate brand exists
-		await _brandRepository.GetByIdAsync(model.BrandId);
-        
-		await _modelRepository.UpdateAsync(model);
+		var existingModel = await _modelRepository.GetByIdAsync(model.Id) 
+      ?? throw new KeyNotFoundException($"Model {model.Id} not found");
+    
+    var brand = await _brandRepository.GetByIdAsync(model.BrandId)
+      ?? throw new KeyNotFoundException($"Brand {model.BrandId} not found");
+    
+    existingModel.BrandId = model.BrandId;
+    existingModel.Name = model.Name;
+    existingModel.Description = model.Description;
+    
+    await _modelRepository.UpdateAsync(existingModel);
 	}
 
 	public async Task DeleteModelAsync(int id)
