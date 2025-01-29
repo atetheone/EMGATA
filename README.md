@@ -1,9 +1,11 @@
 # EMG Voitures - Projet Complet
 
 ## Description
+
 Système complet de gestion de vente de voitures comprenant une API backend en .NET 8, une interface utilisateur en Angular 18+, et une suite de tests.
 
 ## Structure du Projet
+
 ```
 
 emgata/
@@ -16,6 +18,7 @@ emgata/
 ## Composants du Projet
 
 ### 1. Backend (EMGATA.API)
+
 - API REST développée avec .NET 8
 - Base de données SQLite
 - Authentication JWT
@@ -23,6 +26,7 @@ emgata/
 - Documentation Swagger
 
 ### 2. Frontend (emgata_client)
+
 - Application Angular 18+
 - TailwindCSS avec DaisyUI
 - Server-Side Rendering (SSR)
@@ -30,11 +34,13 @@ emgata/
 - Gestion des images
 
 ### 3. Tests (EMGATA.Tests)
+
 - Tests unitaires
 - Tests d'intégration
 - Mocks et fixtures
 
 ## Prérequis
+
 - .NET 8 SDK
 - Node.js (v20+)
 - npm (dernière version stable)
@@ -43,6 +49,7 @@ emgata/
 ## Installation
 
 1. Cloner le repository
+
 ```bash
 git clone https://github.com/atetheone/EMGATA.git
 cd EMGATA
@@ -75,7 +82,7 @@ dotnet test
 
 ## Ports et URLs
 
-- Backend API: `http://localhost:5000`
+- Backend API: `http://localhost:5291`
 - Frontend: `http://localhost:4200`
 - Swagger Documentation: `http://localhost:5000/swagger`
 
@@ -203,4 +210,3 @@ Ce projet est sous licence MIT.
 
 - M. E. H. Ousmane Diallo - Superviseur du projet
 - École Supérieure Polytechnique (ESP)
-
