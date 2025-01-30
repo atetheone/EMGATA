@@ -66,9 +66,13 @@ public class AuthControllerTests
     // Assert
     Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     var okResult = result.Result as OkObjectResult;
+    Assert.IsNotNull(okResult);
+
     var response = okResult.Value as AuthResponseDto;
+    Assert.IsNotNull(response);
     Assert.IsTrue(response.IsSuccess);
-    Assert.IsNotNull(response.Token);
+    Assert.IsNotNull(response.Message);
+    Assert.AreEqual("User created successfully", response.Message);
   }
 
   [TestMethod]
