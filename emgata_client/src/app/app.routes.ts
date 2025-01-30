@@ -1,8 +1,17 @@
+
+
+
+
+
+
 import { Routes } from '@angular/router';
 import { PublicLayoutComponent } from './layouts/public/public-layout.component';
 import { AdminLayoutComponent } from './layouts/admin/admin-layou.component';
 import { adminGuard } from '#guards/admin.guard'
 import { authGuard } from '#guards/auth.guard';
+import { CARS_ROUTES } from './features/cars/car.routes';
+import { ContactComponent } from './features/contact/contact.component';
+import { AboutComponent } from './features/about/about.component';
 
 export const routes: Routes = [
   {
@@ -16,18 +25,15 @@ export const routes: Routes = [
       },
       {
         path: 'cars',
-        loadChildren: () => 
-          import('./features/cars/car.routes').then(m => m.CARS_ROUTES)
+        children: CARS_ROUTES
       },
       {
         path: 'contact',
-        loadComponent: () => 
-          import('./features/contact/contact.component').then(m => m.ContactComponent)
+        component: ContactComponent
       },
       {
         path: 'about',
-        loadComponent: () => 
-          import('./features/about/about.component').then(m => m.AboutComponent)
+        component: AboutComponent
       },
       {
         path: 'auth',
