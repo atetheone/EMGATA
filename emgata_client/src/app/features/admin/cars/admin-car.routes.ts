@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { CarFormComponent } from './car-form.component'
 
 export const ADMIN_CARS_ROUTES: Routes = [
   {
@@ -11,6 +12,6 @@ export const ADMIN_CARS_ROUTES: Routes = [
   },
   {
     path: ':id/edit',
-    loadComponent: () => import('./car-form.component').then(m => m.CarFormComponent)
+    component: CarFormComponent
   }
 ];
