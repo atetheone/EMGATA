@@ -1,77 +1,90 @@
-name: EMGATA API CI/CD
+name: EMGATA.API Continuous Integration and Deployment
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'EMGATA.API/**'
-      - 'EMGATA.Tests/**'
-      - '.github/workflows/**'
+    branches: ["main"]
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'EMGATA.API/**'
-      - 'EMGATA.Tests/**'
-      - '.github/workflows/**'
+    branches: ["main"]
 
 env:
-  DOTNET_VERSION: '8.0.x'
-  WORKING_DIRECTORY: 'EMGATA.API'
-  TEST_DIRECTORY: 'EMGATA.Tests'
-  AZURE_WEBAPP_NAME: 'atetheone-emgata-api'
+  DOTNET_VERSION: "8.0.x"
+  API_PROJECT_PATH: "./EMGATA.API"
+  TEST_PROJECT_PATH: "./EMGATA.Tests"
 
 jobs:
   build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: ${{ env.WORKING_DIRECTORY }}
-    
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-      working-directory: ${{ env.WORKING_DIRECTORY }}
-    
-    - name: Run Tests
-      run: dotnet test --no-restore --verbosity normal
-      working-directory: ${{ env.TEST_DIRECTORY }}
-    
-    - name: Publish
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: dotnet publish --configuration Release --output ./publish
-      working-directory: ${{ env.WORKING_DIRECTORY }}
-    
-    - name: Upload artifact
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      uses: actions/upload-artifact@v4
-      with:
-        name: webapp
-        path: ${{ env.WORKING_DIRECTORY }}/publish
-        retention-days: 1
 
-  deploy:
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Restauration distincte pour l'API et les Tests
+      - name: Restore API Solution
+        run: |
+          cd ${{ env.API_PROJECT_PATH }}
+          dotnet restore
+
+      - name: Restore Test Project
+        run: |
+          cd ${{ env.TEST_PROJECT_PATH }}
+          dotnet restore
+
+      # Build de l'API
+      - name: Build API
+        run: |
+          cd ${{ env.API_PROJECT_PATH }}
+          dotnet build --configuration Release --no-restore
+
+      # Build des Tests
+      - name: Build Tests
+        run: |
+          cd ${{ env.TEST_PROJECT_PATH }}
+          dotnet build --configuration Release --no-restore
+
+      # Exécution des Tests
+      - name: Run Tests
+        run: |
+          cd ${{ env.TEST_PROJECT_PATH }}
+          dotnet test --configuration Release --no-build --verbosity normal
+
+      # Publication de l'API
+      - name: Publish API
+        if: github.ref == 'refs/heads/main'
+        run: |
+          cd ${{ env.API_PROJECT_PATH }}
+          dotnet publish -c Release -o ${{ github.workspace }}/publish
+
+      - name: Upload Artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapp
+          path: ${{ github.workspace }}/publish
+          retention-days: 5
+
+  deploy-to-azure:
+    name: Deploy to Azure App Service
     needs: build-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
 
     steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: webapp
-    
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        package: .
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webapp
+          path: ${{ github.workspace }}/publish
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: atetheone-emgata-api
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ github.workspace }}/publish
