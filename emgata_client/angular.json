@@ -20,6 +20,12 @@
             "outputPath": "dist/emgata_client",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "ssr": {
+              "entry": "src/server.ts"
+            },
+            "prerender": {
+              "routesFile": "src/app/app.routes.server.ts"
+            },
             "polyfills": [
               "zone.js"
             ],
@@ -37,10 +43,7 @@
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "outputMode": "server"
           },
           "configurations": {
             "production": {
