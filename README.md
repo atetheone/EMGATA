@@ -150,53 +150,6 @@ Frontend (emgata_client)
 │   └── shared/    # Éléments partagés
 ```
 
-## Scripts Utiles
-
-```bash
-# Démarrer tout le projet
-./run-all.sh
-
-# Lancer les tests
-./run-tests.sh
-
-# Build complet
-./build-all.sh
-```
-
-## Contribution
-
-1. Fork du projet
-2. Création d'une branche
-
-```bash
-git checkout -b feature/nom-fonctionnalite
-```
-
-3. Commit des changements
-
-```bash
-git commit -m "feat: description"
-```
-
-4. Push sur la branche
-
-```bash
-git push origin feature/nom-fonctionnalite
-```
-
-5. Création d'une Pull Request
-
-## Versioning
-
-Ce projet suit la convention [SemVer](http://semver.org/).
-
-## Support
-
-Pour toute question ou problème:
-
-1. Consulter les issues GitHub existantes
-2. Créer une nouvelle issue si nécessaire
-3. Contacter l'équipe de développement
 
 ## Licence
 
@@ -204,7 +157,7 @@ Ce projet est sous licence MIT.
 
 ## Auteurs
 
-- [Votre Nom] - Développement initial
+- ATE TOUGUE ARISTIDE - Développement initial
 
 ## Remerciements
 
