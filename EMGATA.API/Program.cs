@@ -141,6 +141,11 @@ app.UseStaticFiles(new StaticFileOptions
 	RequestPath = ""
 });
 
+using (var scope = app.Services.CreateScope())
+{
+	var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+	context.Database.EnsureCreated();
+}
 // Modifiez la configuration HTTPS
 if (!app.Environment.IsDevelopment())
 {
