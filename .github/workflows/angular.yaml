@@ -51,8 +51,10 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: ${{ env.APP_LOCATION }}
-          output_location: "dist/emgata_client/browser"
+          app_artifact_location: "dist/emgata_client/browser"
+          output_location: ""
           skip_app_build: true
+          skip_api_build: true
 
 
   close_pull_request_job:
