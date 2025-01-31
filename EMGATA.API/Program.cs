@@ -134,11 +134,17 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+var wwwrootPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+if (!Directory.Exists(wwwrootPath))
+{
+    Directory.CreateDirectory(wwwrootPath);
+}
+
+// Ensuite configurez les fichiers statiques
 app.UseStaticFiles(new StaticFileOptions
 {
-	FileProvider = new PhysicalFileProvider(
-			Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
-	RequestPath = ""
+    FileProvider = new PhysicalFileProvider(wwwrootPath),
+    RequestPath = ""
 });
 
 using (var scope = app.Services.CreateScope())
