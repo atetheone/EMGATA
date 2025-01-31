@@ -3,11 +3,10 @@ name: Angular Frontend CI/CD
 on:
   push:
     branches: [ main ]
-    paths:
+    paths: 
       - 'emgata_client/**'
       - '.github/workflows/angular.yaml'
   pull_request:
-    types: [opened, synchronize, reopened, closed]
     branches: [ main ]
     paths:
       - 'emg_client/**'
@@ -15,7 +14,8 @@ on:
 
 env:
   APP_LOCATION: "emgata_client"
-  API_LOCATION: ""
+  OUTPUT_LOCATION: 'dist/emgata_client/browser'
+  NODE_VERSION: '20.x'
 
 jobs:
   build_and_deploy_job:
@@ -24,8 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
-          lfs: false
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -48,13 +47,10 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: ${{ env.APP_LOCATION }}
-          app_artifact_location: "dist/emgata_client/browser"
-          output_location: ""
+          output_location: "${{ env.OUTPUT_LOCATION }}"
           skip_app_build: true
-          skip_api_build: true
 
 
   close_pull_request_job:
