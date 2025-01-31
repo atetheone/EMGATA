@@ -2,9 +2,17 @@ name: EMGATA.API Continuous Integration and Deployment
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
+    paths:
+      - 'EMGATA.API/**'
+      - 'EMGATA.Tests/**' 
+      - '.github/workflows/dotnet.yaml'
   pull_request:
-    branches: ["main"]
+    branches: [ main ]
+    paths:
+      - 'EMGATA.API/**'
+      - 'EMGATA.Tests/**'
+      - '.github/workflows/dotnet.yaml'
 
 env:
   DOTNET_VERSION: "8.0.x"

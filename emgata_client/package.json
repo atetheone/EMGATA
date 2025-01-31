@@ -11,6 +11,7 @@
     "lint": "ng lint",
     "serve:ssr:emgata-client": "node dist/emgata-client/server/main.js",
     "build:ssr": "ng build && ng run emgata-client:server",
+    "build:static": "ng build --configuration production",
     "prerender": "ng run emgata-client:prerender"
   },
   "private": true,

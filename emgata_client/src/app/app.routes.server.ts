@@ -1,6 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { CarService } from './core/services/car.service';
 import { inject } from '@angular/core';
+import { environment } from '#env/environment';
 
 export const serverRoutes: ServerRoute[] = [
   {
@@ -22,22 +23,31 @@ export const serverRoutes: ServerRoute[] = [
   // Dynamic routes with parameters - use Server rendering
   {
     path: 'cars/:id',
-    renderMode: RenderMode.Prerender,
-    async getPrerenderParams() {
-      const carService = inject(CarService);
-      const cars = await carService.getAllCars().toPromise();
-      return cars!.map(car => ({ id: car.id.toString() }));
-      // This will prerender paths like: /cars/1, /cars/2, etc.
-    },
+    renderMode: RenderMode.Client,
+    // getPrerenderParams: async () => {
+    //   try {
+    //     // Récupérer tous les IDs de voitures via votre API
+    //     const response = await fetch(`${environment.apiUrl}/cars`);
+    //     const cars = await response.json();
+        
+    //     // Retourner un tableau d'objets de paramètres pour chaque voiture
+    //     return cars.map(car => ({
+    //       id: car.id.toString()
+    //     }));
+    //   } catch (error) {
+    //     console.error('Error fetching car IDs:', error);
+    //     return []; // Retourner un tableau vide en cas d'erreur
+    //   }
+    // }
   },
   {
     path: 'admin/cars/:id/edit',
     renderMode: RenderMode.Prerender,
-    async getPrerenderParams() {
-      const carService = inject(CarService);
-      const cars = await carService.getAllCars().toPromise();
-      return cars!.map(car => ({ id: car.id.toString() }));
-    },
+    // async getPrerenderParams() {
+    //   const carService = inject(CarService);
+    //   const cars = await carService.getAllCars().toPromise();
+    //   return cars!.map(car => ({ id: car.id.toString() }));
+    // },
   },
   {
     path: 'admin/**',
